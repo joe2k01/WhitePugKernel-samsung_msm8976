@@ -93,3 +93,4 @@ obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_DSX2)	+= synaptics_dsx2/
 obj-$(CONFIG_TOUCHSCREEN_HIMAX_I2C) += himax/
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_INCELL)	+= synaptics_incell/
 
+obj-$(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE)	+= doubletap2wake.o
