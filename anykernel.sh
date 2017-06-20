@@ -17,7 +17,7 @@ device.name5=
 } # end properties
 
 # shell variables
-/dev/block/bootdevice/by-name/boot;
+block=/dev/block/bootdevice/by-name/boot;
 is_slot_device=0;
 
 
