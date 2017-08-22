@@ -22,6 +22,7 @@
 #include <linux/qpnp/pwm.h>
 #include <linux/err.h>
 
+#include <linux/display_state.h>
 #include "mdss_dsi.h"
 #if defined(CONFIG_FB_MSM_MDSS_SAMSUNG)
 #include "mdss_debug.h"
@@ -39,6 +40,13 @@ DEFINE_MUTEX(LP_STOP_MODE_LOCK); /* For Hall ic panel reset funtion */
 #define DEFAULT_MDP_TRANSFER_TIME 14000
 
 DEFINE_LED_TRIGGER(bl_led_trigger);
+
+bool display_on = true;
+
+bool is_display_on()
+{
+	return display_on;
+}
 
 #define CEIL(x, y)	(((x) + ((y)-1)) / (y))
 
@@ -795,6 +803,7 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 		return -EINVAL;
 	}
 
+	display_on = true;
 	pinfo = &pdata->panel_info;
 	ctrl = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
@@ -991,6 +1000,8 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 		samsung_timing_engine_control(false); /* Timing-generator disable */
 	}
 #endif
+
+	display_on = false;
 
 end:
 #if defined(CONFIG_FB_MSM_MDSS_SAMSUNG)
