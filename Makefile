@@ -881,7 +881,8 @@ endif
 prepare2: prepare3 outputmakefile asm-generic
 
 prepare1: prepare2 $(version_h) include/generated/utsrelease.h \
-                   include/config/auto.conf
+                   include/config/auto.conf \
+                   include/generated/kbuild_cflags.h
 	$(cmd_crmodverdir)
 
 archprepare: archheaders archscripts prepare1 scripts_basic
@@ -907,6 +908,10 @@ define filechk_utsrelease.h
 	(echo \#define UTS_RELEASE \"$(KERNELRELEASE)\";)
 endef
 
+define filechk_kbuild_cflags.h
+	(echo \#define USED_KBUILD_CFLAGS \"$(KBUILD_CFLAGS)\";)
+endef
+
 define filechk_version.h
 	(echo \#define LINUX_VERSION_CODE $(shell                         \
 	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
@@ -918,6 +923,9 @@ $(version_h): $(srctree)/Makefile FORCE
 
 include/generated/utsrelease.h: include/config/kernel.release FORCE
 	$(call filechk,utsrelease.h)
+
+include/generated/kbuild_cflags.h: include/config/kernel.release FORCE
+	$(call filechk,kbuild_cflags.h)
 
 PHONY += headerdep
 headerdep:
