@@ -1,3 +1,4 @@
+#include <linux/ctype.h>
 #include <linux/fs.h>
 #include <generated/kbuild_cflags.h>
 #include <linux/init.h>
@@ -8,14 +9,10 @@
 static int kbuild_cflags_proc_show(struct seq_file *m, void *v)
 {
 	char kbuild_cflags[] = USED_KBUILD_CFLAGS;
-	int lenght = strlen(kbuild_cflags);
 	int i;
-	for(i = 0; i < lenght; i++)
+	for(i = 0; i < strlen(kbuild_cflags); i++)
 	{
-		if(kbuild_cflags[i] == ' ')
-		{
-			kbuild_cflags[i] = '\n';
-		}
+		if (isspace(kbuild_cflags[i])) kbuild_cflags[i]='\n';
 	}
 
 	seq_printf(m, "The KBUILD_CFLAGS variable during the running kernel compilation had this flags enabled: %s\n", kbuild_cflags);
