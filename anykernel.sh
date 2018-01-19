@@ -34,6 +34,8 @@ chmod -R 755 $ramdisk
 ## AnyKernel install
 dump_boot;
 
+insert_line init.qcom.rc "import /init.wpk.rc" after "import /init.trace.rc" "import /init.wpk.rc\n";
+
 write_boot;
 
 ## end install
