@@ -31,6 +31,7 @@
 #include <linux/kthread.h>
 #include <linux/slab.h>
 #include <linux/kernel_stat.h>
+#include <linux/profiles_manager.h>
 #include <asm/cputime.h>
 
 #define CREATE_TRACE_POINTS
@@ -1543,16 +1544,51 @@ static struct cpufreq_interactive_tunables *alloc_tunable(
 		return ERR_PTR(-ENOMEM);
 	}
 
-	tunables->above_hispeed_delay = default_above_hispeed_delay;
-	tunables->nabove_hispeed_delay =
+	if(battery_profile == true) {
+		// If somewhy both battery and performance profiles get enabled
+		// let's use the battery profile warning in the log
+		if(performance_profile == true) {
+			performance_profile = false;
+			pr_info("kpm: Both performance and battery profiles were enabled, using battery profile");
+		}
+
+		// Add your customizations here
+		tunables->above_hispeed_delay = default_above_hispeed_delay;
+		tunables->nabove_hispeed_delay =
 		ARRAY_SIZE(default_above_hispeed_delay);
-	tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
-	tunables->target_loads = default_target_loads;
-	tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
-	tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
-	tunables->timer_rate = DEFAULT_TIMER_RATE;
-	tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
-	tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
+		tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
+		tunables->target_loads = default_target_loads;
+		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
+		tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_rate = DEFAULT_TIMER_RATE;
+		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
+	}
+	else if(performance_profile == true) {
+		// Add your customizations here
+		tunables->above_hispeed_delay = default_above_hispeed_delay;
+		tunables->nabove_hispeed_delay =
+		ARRAY_SIZE(default_above_hispeed_delay);
+		tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
+		tunables->target_loads = default_target_loads;
+		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
+		tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_rate = DEFAULT_TIMER_RATE;
+		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
+	}
+	else { // If none of the profiles is enabled use stock values
+		tunables->above_hispeed_delay = default_above_hispeed_delay;
+		tunables->nabove_hispeed_delay =
+		ARRAY_SIZE(default_above_hispeed_delay);
+		tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
+		tunables->target_loads = default_target_loads;
+		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
+		tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_rate = DEFAULT_TIMER_RATE;
+		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
+	}
 
 	spin_lock_init(&tunables->target_loads_lock);
 	spin_lock_init(&tunables->above_hispeed_delay_lock);
@@ -1560,6 +1596,10 @@ static struct cpufreq_interactive_tunables *alloc_tunable(
 	save_tunables(policy, tunables);
 	return tunables;
 }
+
+/*
+ * This needs to be commented out,
+ * else parameters can't be changed after a change in kpm interface.
 
 static struct cpufreq_interactive_tunables *restore_tunables(
 						struct cpufreq_policy *policy)
@@ -1573,6 +1613,8 @@ static struct cpufreq_interactive_tunables *restore_tunables(
 
 	return per_cpu(cpuinfo, cpu).cached_tunables;
 }
+
+*/
 
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		unsigned int event)
@@ -1616,7 +1658,9 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		for_each_cpu(j, policy->related_cpus)
 			per_cpu(cpuinfo, j).first_cpu = first_cpu;
 
-		tunables = restore_tunables(policy);
+		//tunables = restore_tunables(policy); This needs to be commented out,
+		//else parameters can't be changed after a change in kpm interface.
+
 		if (!tunables) {
 			tunables = alloc_tunable(policy);
 			if (IS_ERR(tunables))
