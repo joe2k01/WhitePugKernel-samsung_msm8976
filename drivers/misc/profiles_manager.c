@@ -21,10 +21,5 @@
 #include <linux/module.h>
 #include <linux/profiles_manager.h>
 
-// Battery profile
-int battery_profile = 0;
-module_param_named(battery_profile, battery_profile, int, 0664);
-
-// Performance profile
-int performance_profile = 0;
-module_param_named(performance_profile, performance_profile, int, 0664);
+int kpm_profile = 0;
+module_param_named(kpm_profile, kpm_profile, int, 0644);

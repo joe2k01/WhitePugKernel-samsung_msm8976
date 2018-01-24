@@ -18,5 +18,10 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-extern int battery_profile;
-extern int performance_profile;
+extern int kpm_profile;
+
+enum kpm_available_profiles{
+	none,
+	battery,
+	performance
+};

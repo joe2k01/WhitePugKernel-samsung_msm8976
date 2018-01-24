@@ -1544,14 +1544,7 @@ static struct cpufreq_interactive_tunables *alloc_tunable(
 		return ERR_PTR(-ENOMEM);
 	}
 
-	if(battery_profile == true) {
-		// If somewhy both battery and performance profiles get enabled
-		// let's use the battery profile warning in the log
-		if(performance_profile == true) {
-			performance_profile = false;
-			pr_info("kpm: Both performance and battery profiles were enabled, using battery profile");
-		}
-
+	if(kpm_profile == battery) {
 		// Add your customizations here
 		tunables->above_hispeed_delay = default_above_hispeed_delay;
 		tunables->nabove_hispeed_delay =
@@ -1564,7 +1557,7 @@ static struct cpufreq_interactive_tunables *alloc_tunable(
 		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
 		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
 	}
-	else if(performance_profile == true) {
+	else if(kpm_profile == performance) {
 		// Add your customizations here
 		tunables->above_hispeed_delay = default_above_hispeed_delay;
 		tunables->nabove_hispeed_delay =
