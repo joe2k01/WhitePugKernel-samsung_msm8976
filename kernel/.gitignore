@@ -1,6 +1,8 @@
 #
 # Generated files
 #
+x509_certificate_list
+
 config_data.h
 config_data.gz
 timeconst.h
