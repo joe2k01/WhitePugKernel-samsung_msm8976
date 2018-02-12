@@ -18,26 +18,20 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define KPM_NAME "YourKernelNameHere"
-// THIS IS MANDATORY, YOU MUST DEFINE YOUR KERNEL NAME.
+#define KPM_NAME "WhitePugKernel"
 
-#define KPM_DISABLED_PROFILES "balance,gaming"
-// If you want to include all the profiles, you can delete this line.
+#define KPM_DISABLED_PROFILES "balance"
 
 #define KPM_NOT_TUNED_GOVERNOR "ondemand"
-// THIS IS MANDATORY, YOU MUST DEFINE A NOT TUNED GOVERNOR.
 
 extern int kpm_profile;
 
 enum kpm_available_profiles {
-	// You should change values here according to the disabled profiles.
 	performance = 1,
-	battery = 2
+	battery = 2,
+	gaming = 3
 };
 
-/* Here you should define the governor you want to use
- * for each profile
- */
 #define KPM_PERFORMANCE_GOVERNOR "interactive"
 #define KPM_BATTERY_GOVERNOR "interactive"
-
+#define KPM_GAMING_GOVERNOR "interactive"

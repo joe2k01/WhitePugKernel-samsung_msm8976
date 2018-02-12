@@ -1552,20 +1552,37 @@ static struct cpufreq_interactive_tunables *alloc_tunable(
 		tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
 		tunables->target_loads = default_target_loads;
 		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
+		tunables->min_sample_time = (30 * USEC_PER_MSEC);
+		tunables->timer_rate = DEFAULT_TIMER_RATE;
+		tunables->boostpulse_duration_val = 0;
+		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
+	}
+	else if(kpm_profile == performance) {
+		static unsigned int perf_target_loads[] = {70};
+
+		// Add your customizations here
+		tunables->above_hispeed_delay = default_above_hispeed_delay;
+		tunables->nabove_hispeed_delay =
+		ARRAY_SIZE(default_above_hispeed_delay);
+		tunables->go_hispeed_load = 80;
+		tunables->target_loads = perf_target_loads;
+		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
 		tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
 		tunables->timer_rate = DEFAULT_TIMER_RATE;
 		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
 		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
 	}
-	else if(kpm_profile == performance) {
+	else if(kpm_profile == gaming) {
+		static unsigned int gaming_target_loads[] = {50};
+
 		// Add your customizations here
 		tunables->above_hispeed_delay = default_above_hispeed_delay;
 		tunables->nabove_hispeed_delay =
 		ARRAY_SIZE(default_above_hispeed_delay);
-		tunables->go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
-		tunables->target_loads = default_target_loads;
+		tunables->go_hispeed_load = 60;
+		tunables->target_loads = gaming_target_loads;
 		tunables->ntarget_loads = ARRAY_SIZE(default_target_loads);
-		tunables->min_sample_time = DEFAULT_MIN_SAMPLE_TIME;
+		tunables->min_sample_time = (90 * USEC_PER_MSEC);
 		tunables->timer_rate = DEFAULT_TIMER_RATE;
 		tunables->boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
 		tunables->timer_slack_val = DEFAULT_TIMER_SLACK;
