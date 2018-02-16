@@ -45,6 +45,11 @@ static int kpm_name_proc_show(struct seq_file *m, void *v) {
 	return 0;
 }
 
+static int kpm_profile_proc_show(struct seq_file *m, void *v) {
+	seq_printf(m, "%d\n", kpm_profile);
+	return 0;
+}
+
 static int kpm_not_tuned_proc_show(struct seq_file *m, void *v) {
 	seq_printf(m, "%s\n", KPM_NOT_TUNED_GOVERNOR);
 	return 0;
@@ -92,6 +97,17 @@ static int kpm_name_proc_open(struct inode *inode, struct file *file) {
 	return single_open(file, kpm_name_proc_show, NULL);
 }
 
+static int kpm_profile_proc_open(struct inode *inode, struct file *file) {
+	return single_open(file, kpm_profile_proc_show, NULL);
+}
+
+static ssize_t kpm_profile_proc_write(struct file *file, const char __user * buffer,
+				  size_t count, loff_t * ppos) {
+	kpm_profile = *buffer - '0';
+
+	return count;
+}
+
 static int kpm_not_tuned_proc_open(struct inode *inode, struct file *file) {
 	return single_open(file, kpm_not_tuned_proc_show, NULL);
 }
@@ -113,6 +129,14 @@ static const struct file_operations kpm_proc_fops = {
 
 static const struct file_operations kpm_name_proc_fops = {
 	.open		= kpm_name_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static const struct file_operations kpm_profile_proc_fops = {
+	.open		= kpm_profile_proc_open,
+	.write		= kpm_profile_proc_write,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
@@ -142,6 +166,7 @@ static const struct file_operations kpm_disabled_profiles_proc_fops = {
 static int __init proc_kpm_init(void) {
 	proc_create("kpm_supported", 0, NULL, &kpm_proc_fops);
 	proc_create("kpm_name", 0, NULL, &kpm_name_proc_fops);
+	proc_create("kpm_profile", 0, NULL, &kpm_profile_proc_fops);
 	proc_create("kpm_not_tuned", 0, NULL, &kpm_not_tuned_proc_fops);
 	proc_create("kpm_final", 0, NULL, &kpm_final_proc_fops);
 	if(strcmp(kpm_disabled_profiles, "none") != 0){
